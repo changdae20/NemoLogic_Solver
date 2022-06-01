@@ -213,6 +213,11 @@ int main( int argc, char *argv[] ) {
     // 예제 세팅
     std::vector<std::vector<int>> row_hints, col_hints;
     auto board = make_board( "board.txt", row_hints, col_hints );
+
+    if ( board.size() == 0 ) {
+        std::cout << "malformed board.txt!!" << std::endl;
+        return 0;
+    }
     // std::cout << "======= row_hints =======" << std::endl;
     // print(row_hints);
     // std::cout << "======= col_hints =======" << std::endl;
