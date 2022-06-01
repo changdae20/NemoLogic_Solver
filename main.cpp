@@ -28,9 +28,27 @@ void print( std::vector<std::vector<int>> &arr ) {
     }
 }
 
+unsigned long long combination( unsigned long long n, unsigned long long k ) {
+    if ( k > n )
+        return 0uLL;
+    if ( k * 2 > n )
+        k = n - k;
+    if ( k == 0 )
+        return 1uLL;
+
+    unsigned long long result = n;
+    for ( unsigned long long i = 2; i <= k; ++i ) {
+        result *= ( n - i + 1 );
+        result /= i;
+    }
+    return result;
+}
+
 std::vector<std::vector<int>> make_candidates( const std::vector<int> &hint, int board_size ) {
     std::vector<std::vector<int>> candidates;
     auto sum = std::accumulate( hint.begin(), hint.end(), 0 );
+
+    candidates.reserve( combination( hint.size() + 1, board_size - sum - hint.size() + 1 ) );
     //std::cout << "Line " << __LINE__ << " : board_size : " << board_size  << std::endl;
     //std::cout << "Line " << __LINE__ << " : sum : " << sum << std::endl;
     std::vector<bool> temp( board_size - sum + 1, true );
@@ -41,6 +59,7 @@ std::vector<std::vector<int>> make_candidates( const std::vector<int> &hint, int
     do {
         size_t hint_index = 0;
         std::vector<int> candidate;
+        candidate.reserve( board_size );
         for ( const auto &el : temp ) {
             if ( !el ) {
                 for ( int i = 0; i < hint.at( hint_index ); ++i )
@@ -59,11 +78,11 @@ std::vector<std::vector<int>> make_candidates( const std::vector<int> &hint, int
 }
 
 bool is_done( const std::vector<std::vector<int>> &board ) {
-    for ( const auto &row : board )
-        for ( const auto &el : row )
-            if ( el == static_cast<int>( CELL::UNKNOWN ) )
-                return false;
-    return true;
+    return std::all_of( board.begin(), board.end(), []( const auto &line ) {
+        return std::all_of( line.begin(), line.end(), []( const auto &el ) {
+            return el != static_cast<int>( CELL::UNKNOWN );
+        } );
+    } );
 }
 
 bool perform_row( std::vector<std::vector<int>> &board, std::vector<std::vector<int>> &row_candidates, int row ) {
@@ -187,6 +206,7 @@ std::vector<std::vector<int>> make_board( std::string filename, std::vector<std:
 
     return board;
 }
+
 int main( int argc, char *argv[] ) {
     clock_t start, end;
     start = clock();
