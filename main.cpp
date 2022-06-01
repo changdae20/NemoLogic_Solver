@@ -1,12 +1,11 @@
 #include <algorithm>
+#include <ctime>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
-#include <stdlib.h>
-#include <time.h>
 #include <utility>
 #include <vector>
 
@@ -241,13 +240,24 @@ int main( int argc, char *argv[] ) {
             col_candidates[ j ].second.second = col_candidates[ j ].first.size();
         std::sort( col_candidates.begin(), col_candidates.end(), []( const auto &a, const auto &b ) { return a.second.second < b.second.second; } );
 
+#ifdef _WIN32
         system( "cls" );
+#endif
+#ifdef linux
+        system( "clear" );
+#endif
+
         std::cout << "===== " << i + 1 << "th iteration =====" << std::endl;
         print_board( board );
         if ( is_done( board ) )
             break;
     }
+#ifdef _WIN32
     system( "cls" );
+#endif
+#ifdef linux
+    system( "clear" );
+#endif
     std::cout << "===== Result =====" << std::endl;
     print_board( board );
     if ( is_done( board ) )
@@ -256,6 +266,8 @@ int main( int argc, char *argv[] ) {
         std::cout << "NOT DONE..." << std::endl;
 
     end = clock();
-    std::cout << "Elapsed Time : " << static_cast<double>( ( end - start ) / 1000.0 ) << "s" << std::endl;
+
+    std::cout << std::fixed;
+    std::cout << "Elapsed Time : " << static_cast<double>( end - start ) / CLOCKS_PER_SEC << "s" << std::endl;
     return 0;
 }
