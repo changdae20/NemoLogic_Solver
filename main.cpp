@@ -77,11 +77,9 @@ std::vector<std::vector<int>> make_candidates( const std::vector<int> &hint, int
     return candidates;
 }
 
-bool is_done( const std::vector<std::vector<int>> &board ) {
-    return std::all_of( board.begin(), board.end(), []( const auto &line ) {
-        return std::all_of( line.begin(), line.end(), []( const auto &el ) {
-            return el != static_cast<int>( CELL::UNKNOWN );
-        } );
+int is_done( const std::vector<std::vector<int>> &board ) {
+    return std::accumulate( board.begin(), board.end(), 0, []( int &sum, auto &row ) {
+        return sum + std::count_if( row.begin(), row.end(), []( const auto &el ) { return el == static_cast<int>( CELL::BLANK ) || el == static_cast<int>( CELL::FILL ); } );
     } );
 }
 
@@ -157,6 +155,19 @@ void print_board( std::vector<std::vector<int>> &board ) {
         }
         std::cout << std::endl;
     }
+}
+
+void print_progress_bar( int count, int total ) {
+    int bar_length = 40;
+    std::cout << "[";
+    for ( int i = 0; i < ( bar_length * count / total ); i++ )
+        std::cout << "=";
+    if ( count != total )
+        std::cout << ">";
+    for ( int i = 0; i < bar_length - ( bar_length * count / total ); i++ )
+        std::cout << " ";
+    std::cout << "] " << ( 100 * count / total ) << "%" << std::endl;
+    return;
 }
 
 std::vector<std::string> split( std::string input, char delimiter ) {
@@ -274,8 +285,11 @@ int main( int argc, char *argv[] ) {
 
         std::cout << "===== " << i + 1 << "th iteration =====" << std::endl;
         print_board( board );
-        if ( is_done( board ) )
+        int filled = is_done( board );
+        if ( filled == ( board.size() * board[ 0 ].size() ) )
             break;
+        else
+            print_progress_bar( filled, ( board.size() * board[ 0 ].size() ) );
     }
 #ifdef _WIN32
     system( "cls" );
@@ -285,7 +299,9 @@ int main( int argc, char *argv[] ) {
 #endif
     std::cout << "===== Result =====" << std::endl;
     print_board( board );
-    if ( is_done( board ) )
+    int filled = is_done( board );
+    print_progress_bar( filled, ( board.size() * board[ 0 ].size() ) );
+    if ( filled == ( board.size() * board[ 0 ].size() ) )
         std::cout << "DONE!!" << std::endl;
     else
         std::cout << "NOT DONE..." << std::endl;
