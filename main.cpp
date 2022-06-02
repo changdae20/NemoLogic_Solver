@@ -4,10 +4,11 @@
 #include <functional>
 #include <iostream>
 #include <numeric>
-#include <sstream>
+#include <regex>
 #include <stdexcept>
 #include <utility>
 #include <vector>
+
 
 enum class CELL {
     FILL = 1,
@@ -88,13 +89,14 @@ bool perform_row( std::vector<std::vector<int>> &board, std::vector<std::vector<
 
     // 현재 보드 상태에 맞춰서 row candidates 쳐낼거 쳐냄
     for ( size_t i = 0; i < board[ row ].size(); ++i ) {
-        if( board[row][i]==static_cast<int>( CELL::UNKNOWN ) ) continue;
-        auto iter = std::remove_if( row_candidates.begin(), row_candidates.end(), [&board, &row, &i](const auto& row_candidate){
-            return board[ row ][ i ] != row_candidate[i];
-        });
-        if(iter != row_candidates.end()){
+        if ( board[ row ][ i ] == static_cast<int>( CELL::UNKNOWN ) )
+            continue;
+        auto iter = std::remove_if( row_candidates.begin(), row_candidates.end(), [ &board, &row, &i ]( const auto &row_candidate ) {
+            return board[ row ][ i ] != row_candidate[ i ];
+        } );
+        if ( iter != row_candidates.end() ) {
             changed = true;
-            row_candidates.erase(iter, row_candidates.end());
+            row_candidates.erase( iter, row_candidates.end() );
         }
     }
 
@@ -117,13 +119,14 @@ bool perform_col( std::vector<std::vector<int>> &board, std::vector<std::vector<
 
     // 현재 보드 상태에 맞춰서 col candidates 쳐낼거 쳐냄
     for ( size_t i = 0; i < board.size(); ++i ) {
-        if( board[i][col]==static_cast<int>( CELL::UNKNOWN ) ) continue;
-        auto iter = std::remove_if( col_candidates.begin(), col_candidates.end(), [&board, &col, &i](const auto& col_candidates){
-            return board[ i ][ col ] != col_candidates[i];
-        });
-        if(iter != col_candidates.end()){
+        if ( board[ i ][ col ] == static_cast<int>( CELL::UNKNOWN ) )
+            continue;
+        auto iter = std::remove_if( col_candidates.begin(), col_candidates.end(), [ &board, &col, &i ]( const auto &col_candidates ) {
+            return board[ i ][ col ] != col_candidates[ i ];
+        } );
+        if ( iter != col_candidates.end() ) {
             changed = true;
-            col_candidates.erase(iter, col_candidates.end());
+            col_candidates.erase( iter, col_candidates.end() );
         }
     }
 
@@ -169,15 +172,9 @@ void print_progress_bar( int count, int total ) {
 }
 
 std::vector<std::string> split( std::string input, char delimiter ) {
-    std::vector<std::string> answer;
-    std::stringstream ss( input );
-    std::string temp;
-
-    while ( std::getline( ss, temp, delimiter ) ) {
-        answer.push_back( temp );
-    }
-
-    return answer;
+    std::regex reg( std::string(1, delimiter) );
+    std::sregex_token_iterator it(input.begin(), input.end(), reg, -1), end;
+    return std::vector<std::string>( it, end );
 }
 
 std::vector<std::vector<int>> make_board( std::string filename, std::vector<std::vector<int>> &row_hints, std::vector<std::vector<int>> &col_hints ) {
