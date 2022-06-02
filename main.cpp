@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-
 enum class CELL {
     FILL = 1,
     BLANK = 0,
@@ -172,8 +171,8 @@ void print_progress_bar( int count, int total ) {
 }
 
 std::vector<std::string> split( std::string input, char delimiter ) {
-    std::regex reg( std::string(1, delimiter) );
-    std::sregex_token_iterator it(input.begin(), input.end(), reg, -1), end;
+    std::regex reg( std::string( 1, delimiter ) );
+    std::sregex_token_iterator it( input.begin(), input.end(), reg, -1 ), end;
     return std::vector<std::string>( it, end );
 }
 
