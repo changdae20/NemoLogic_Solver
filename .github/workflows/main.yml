@@ -32,14 +32,3 @@ jobs:
         run: |
           g++ -std=gnu++17 -O3 -o main -DCICDTEST main.cpp
           ./main
-        
-  formatting-check:
-    name: Formatting Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run clang-format style check for C/C++/Protobuf programs.
-        uses: jidicula/clang-format-action@v4.6.2
-        with:
-          clang-format-version: '13'
-          check-path: 'src'
