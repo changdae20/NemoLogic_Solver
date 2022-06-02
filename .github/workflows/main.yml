@@ -30,7 +30,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: build
         run: |
-          g++ -std=gnu++17 -O3 -o main main.cpp
+          g++ -std=gnu++17 -O3 -o main -DCICDTEST main.cpp
           ./main
         
   formatting-check:

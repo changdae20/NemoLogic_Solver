@@ -272,14 +272,18 @@ int main( int argc, char *argv[] ) {
 #ifdef linux
         system( "clear" );
 #endif
-
+#ifndef CICDTEST
         std::cout << "===== " << i + 1 << "th iteration =====" << std::endl;
         print_board( board );
+#endif
         int filled = is_done( board );
         if ( filled == ( board.size() * board[ 0 ].size() ) )
             break;
-        else
+        else{
+#ifndef CICDTEST
             print_progress_bar( filled, ( board.size() * board[ 0 ].size() ) );
+#endif
+        }
     }
 #ifdef _WIN32
     system( "cls" );
