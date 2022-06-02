@@ -88,14 +88,13 @@ bool perform_row( std::vector<std::vector<int>> &board, std::vector<std::vector<
 
     // 현재 보드 상태에 맞춰서 row candidates 쳐낼거 쳐냄
     for ( size_t i = 0; i < board[ row ].size(); ++i ) {
-        for ( auto iter = row_candidates.begin(); iter != row_candidates.end(); ) {
-            if ( board[ row ][ i ] == static_cast<int>( CELL::UNKNOWN ) )
-                ++iter;
-            else if ( board[ row ][ i ] != ( *iter )[ i ] ) {
-                iter = row_candidates.erase( iter );
-                changed = true;
-            } else
-                ++iter;
+        if( board[row][i]==static_cast<int>( CELL::UNKNOWN ) ) continue;
+        auto iter = std::remove_if( row_candidates.begin(), row_candidates.end(), [&board, &row, &i](const auto& row_candidate){
+            return board[ row ][ i ] != row_candidate[i];
+        });
+        if(iter != row_candidates.end()){
+            changed = true;
+            row_candidates.erase(iter, row_candidates.end());
         }
     }
 
@@ -118,14 +117,13 @@ bool perform_col( std::vector<std::vector<int>> &board, std::vector<std::vector<
 
     // 현재 보드 상태에 맞춰서 col candidates 쳐낼거 쳐냄
     for ( size_t i = 0; i < board.size(); ++i ) {
-        for ( auto iter = col_candidates.begin(); iter != col_candidates.end(); ) {
-            if ( board[ i ][ col ] == static_cast<int>( CELL::UNKNOWN ) )
-                ++iter;
-            else if ( board[ i ][ col ] != ( *iter )[ i ] ) {
-                iter = col_candidates.erase( iter );
-                changed = true;
-            } else
-                ++iter;
+        if( board[i][col]==static_cast<int>( CELL::UNKNOWN ) ) continue;
+        auto iter = std::remove_if( col_candidates.begin(), col_candidates.end(), [&board, &col, &i](const auto& col_candidates){
+            return board[ i ][ col ] != col_candidates[i];
+        });
+        if(iter != col_candidates.end()){
+            changed = true;
+            col_candidates.erase(iter, col_candidates.end());
         }
     }
 
