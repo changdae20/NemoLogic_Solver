@@ -14,6 +14,8 @@ on:
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
+        
 jobs:
   # This workflow contains a single job called "build"
   build:
@@ -27,18 +29,17 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: build
-        run: g++ -std=gnu++17 -O3 -o main main.cpp
+        run: |
+          g++ -std=gnu++17 -O3 -o main main.cpp
+          ./main
         
-  # This workflow contains a single job called "build"
-  test:
-    # The type of runner that the job will run on
+  formatting-check:
+    name: Formatting Check
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: test
-        run: ./main
+      - uses: actions/checkout@v2
+      - name: Run clang-format style check for C/C++/Protobuf programs.
+        uses: jidicula/clang-format-action@v4.6.2
+        with:
+          clang-format-version: '13'
+          check-path: 'src'
