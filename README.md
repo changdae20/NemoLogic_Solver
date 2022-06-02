@@ -56,7 +56,7 @@ row+2 줄부터 row++col+1번째 줄까지는 좌측에서 우측의 순서로 �
 
 아래는 예시에 대한 출력 결과입니다.
 
-<img src="media/output1.gif" width="55%">
+<img src="media/output1.gif" width="75%">
 
 <img src="media/output2.gif">
 
