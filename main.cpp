@@ -49,7 +49,7 @@ std::vector<std::vector<int>> make_candidates( const std::vector<int> &hint, int
     std::vector<std::vector<int>> candidates;
     auto sum = std::accumulate( hint.begin(), hint.end(), 0 );
 
-    candidates.reserve( combination( hint.size() + 1, board_size - sum - hint.size() + 1 ) );
+    candidates.reserve( combination( board_size - sum + 1, hint.size() ) );
     //std::cout << "Line " << __LINE__ << " : board_size : " << board_size  << std::endl;
     //std::cout << "Line " << __LINE__ << " : sum : " << sum << std::endl;
     std::vector<bool> temp( board_size - sum + 1, true );
