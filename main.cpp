@@ -231,44 +231,40 @@ int main( int argc, char *argv[] ) {
     // print_board(board);
 
     // 행, 열별 가능한 경우의 수들 미리 계산
-    std::vector<std::pair<std::vector<std::vector<int>>, std::pair<int, int>>> row_candidates, col_candidates;
+    std::vector<std::pair<std::vector<std::vector<int>>, int>> row_candidates, col_candidates;
 
     size_t idx = 0;
     std::for_each( row_hints.begin(), row_hints.end(), [ &row_candidates, &board, &idx ]( const auto &hint ) {
         auto temp = make_candidates( hint, board[ 0 ].size() );
-        row_candidates.push_back( std::pair<std::vector<std::vector<int>>, std::pair<int, int>>( temp, std::make_pair<int, int>( idx++, temp.size() ) ) );
+        row_candidates.push_back( std::pair<std::vector<std::vector<int>>, int>( temp, idx++ ) );
         // std::cout << "row hint generated with size " << temp.size() << "\n";
     } );
-    std::sort( row_candidates.begin(), row_candidates.end(), []( const auto &a, const auto &b ) { return a.second.second < b.second.second; } );
+    std::sort( row_candidates.begin(), row_candidates.end(), []( const auto &a, const auto &b ) { return a.first.size() < b.first.size(); } );
 
     idx = 0;
     std::for_each( col_hints.begin(), col_hints.end(), [ &col_candidates, &board, &idx ]( const auto &hint ) {
         auto temp = make_candidates( hint, board.size() );
-        col_candidates.push_back( std::pair<std::vector<std::vector<int>>, std::pair<int, int>>( temp, std::make_pair<int, int>( idx++, temp.size() ) ) );
+        col_candidates.push_back( std::pair<std::vector<std::vector<int>>, int>( temp, idx++ ) );
         // std::cout << "col hint generated with size " << temp.size() << "\n";
     } );
-    std::sort( col_candidates.begin(), col_candidates.end(), []( const auto &a, const auto &b ) { return a.second.second < b.second.second; } );
+    std::sort( col_candidates.begin(), col_candidates.end(), []( const auto &a, const auto &b ) { return a.first.size() < b.first.size(); } );
 
     for ( size_t i = 0; i < 10000; ++i ) {
         size_t j = 0;
-        while ( !perform_row( board, row_candidates[ j ].first, row_candidates[ j ].second.first ) ) {
+        while ( !perform_row( board, row_candidates[ j ].first, row_candidates[ j ].second ) ) {
             j++;
             if ( j >= board.size() )
                 break;
         }
-        if ( j < board.size() )
-            row_candidates[ j ].second.second = row_candidates[ j ].first.size();
-        std::sort( row_candidates.begin(), row_candidates.end(), []( const auto &a, const auto &b ) { return a.second.second < b.second.second; } );
+        std::sort( row_candidates.begin(), row_candidates.end(), []( const auto &a, const auto &b ) { return a.first.size() < b.first.size(); } );
 
         j = 0;
-        while ( !perform_col( board, col_candidates[ j ].first, col_candidates[ j ].second.first ) ) {
+        while ( !perform_col( board, col_candidates[ j ].first, col_candidates[ j ].second ) ) {
             j++;
             if ( j >= board[ 0 ].size() )
                 break;
         }
-        if ( j < board.size() )
-            col_candidates[ j ].second.second = col_candidates[ j ].first.size();
-        std::sort( col_candidates.begin(), col_candidates.end(), []( const auto &a, const auto &b ) { return a.second.second < b.second.second; } );
+        std::sort( col_candidates.begin(), col_candidates.end(), []( const auto &a, const auto &b ) { return a.first.size() < b.first.size(); } );
 
 #ifdef _WIN32
         system( "cls" );
